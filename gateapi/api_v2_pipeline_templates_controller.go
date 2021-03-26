@@ -454,8 +454,15 @@ func (a *V2PipelineTemplatesControllerApiService) ListUsingGET1(ctx context.Cont
 	localVarQueryParams := url.Values{}
 	localVarFormParams := url.Values{}
 
-	if localVarOptionals != nil && localVarOptionals.Scopes.IsSet() {
-		localVarQueryParams.Add("scopes", parameterToString(localVarOptionals.Scopes.Value(), "multi"))
+	if localVarOptionals != nil && localVarOptionals.Scopes.IsSet() { 
+		// Get the value of scopes and cast it, so the formatter knows how to parse it
+		localVarScopeParam := *localVarOptionals.Scopes.Value().(*[]string)
+		// Check its length, as we don't want to set the scope param if the array is empty
+		// This is only needed until https://github.com/spinnaker/gate/pull/1450 appears in le wild
+		if len(localVarScopeParam) > 0 {
+			// multi didn't seem to be a valid collectionType? but std output seems to be ok.
+			localVarQueryParams.Add("scopes", parameterToString(localVarScopeParam, "multi"))
+		}
 	}
 	// to determine the Content-Type header
 	localVarHttpContentTypes := []string{}
